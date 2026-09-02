@@ -1,0 +1,11 @@
+LEARNHUB ADMIN LOGIN
+====================
+Admin password: admin123
+
+Easiest way:
+1. Double-click OPEN_LEARNHUB_ADMIN.bat
+2. It starts the local server.
+3. Chrome opens the Admin Panel automatically.
+4. Enter: admin123
+
+Do NOT open learnhub-admin.html by double-clicking if the server is not running.
