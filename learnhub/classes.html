@@ -1,0 +1,45 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Classes — LearnHub</title><link rel="stylesheet" href="learnhub-pages.css"></head><body><header class="top"><a class="brand" href="coaching.html"><span>LH</span><div><b>LearnHub</b><small>Learning platform</small></div></a><nav class="nav"><a href="coaching.html">Home</a><a href="courses.html">Courses</a><a href="batches.html">Batches</a><a href="classes.html">Classes</a><a href="practice.html">Practice</a><a href="materials.html">Study PDFs</a><a href="my-learning.html">My Learning</a><a href="support.html">Support</a><a href="profile.html">Profile</a></nav><div class="user"><span data-name></span> · <button id="logout">Logout</button></div></header><main class="wrap"><span class="eyebrow">LIVE + RECORDED CLASSES</span><h1 class="title">Learn with your classes.</h1><p class="muted">Join scheduled live sessions or watch recorded lessons.</p><section style="margin-top:32px"><div class="section-head"><div><span class="eyebrow">LIVE CLASSES</span><h2>Join a live session</h2></div></div><div id="liveGrid" class="grid"></div></section><section style="margin-top:42px"><div class="section-head"><div><span class="eyebrow">RECORDED CLASSES</span><h2>Watch anytime</h2></div></div><div id="classGrid" class="grid"></div></section></main><footer><span>© 2026 LearnHub</span><span>Original learning platform</span></footer><script src="learnhub-content.js"></script><script src="learnhub-pages.js"></script><script>
+function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function safeUrl(v){try{const u=new URL(v,location.href);return /^https?:$/.test(u.protocol)?u.href:'#'}catch{return '#'}}
+function dateTime(v){const d=new Date(v);return isNaN(d)?String(v||''):d.toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'})}
+function liveStatus(x){const now=Date.now(),st=new Date(x.start).getTime(),en=x.end?new Date(x.end).getTime():st+2*60*60*1000;if(!Number.isFinite(st))return ['SCHEDULED','upcoming',false];if(now>=st&&now<en)return ['LIVE NOW','live',true];if(now<st)return ['UPCOMING','upcoming',false];return ['ENDED','ended',false]}
+async function getContent(){
+  const api=(location.protocol==='file:')?'http://localhost:3000/api/content':'/api/content';
+  const r=await fetch(api,{cache:'no-store'});
+  if(!r.ok) throw new Error('Backend returned '+r.status);
+  return await r.json();
+}
+function renderContent(d){
+  const liveBox=document.getElementById('liveGrid'),box=document.getElementById('classGrid');
+  const live=Array.isArray(d.liveClasses)?d.liveClasses:[];
+  liveBox.innerHTML=live.length?live.map(x=>{
+    const [status,cls,canJoin]=liveStatus(x);
+    return `<article class="card live-card ${cls}"><span class="eyebrow">${status==='LIVE NOW'?'🔴':'🟣'} ${status}</span><h3>${esc(x.title)}</h3><p>${esc(x.desc||'Live learning session.')}</p><small>${esc(x.subject||'Live class')} · ${esc(x.teacher||'Instructor')}${x.batch?' · '+esc(x.batch):''}<br>${dateTime(x.start)}${x.end?' → '+dateTime(x.end):''}</small><div style="margin-top:16px"><a class="btn ${canJoin?'alt':''}" href="${safeUrl(x.meetingUrl)}" target="_blank" rel="noopener">${canJoin?'▶ Join Live':'↗ Open Class Link'}</a></div></article>`
+  }).join(''):'<article class="card"><h3>No live classes scheduled</h3><p>Upcoming live sessions added by the admin will appear here.</p></article>';
+  const a=Array.isArray(d.classes)?d.classes:[];
+  box.innerHTML=a.length?a.map(x=>`<article class="card"><span class="eyebrow">${esc(x.subject)}</span><h3>${esc(x.title)}</h3><p>${esc(x.desc||'Recorded learning session.')}</p><small>${esc(x.teacher||'Instructor')}${x.batch?' · '+esc(x.batch):''} · ${esc(x.date||'')}</small><div style="margin-top:16px"><button class="btn" onclick="watchClass(${Number(x.id)})">▶ Watch class</button></div></article>`).join(''):'<article class="card"><h3>No classes yet</h3><p>Classes added by the admin will appear here.</p></article>';
+}
+async function render(){
+  const liveBox=document.getElementById('liveGrid'),box=document.getElementById('classGrid');
+  try{
+    const d=await getContent();
+    renderContent(d);
+    localStorage.setItem('learnhubLiveClasses',JSON.stringify(d.liveClasses||[]));
+    localStorage.setItem('learnhubClasses',JSON.stringify(d.classes||[]));
+  }catch(e){
+    liveBox.innerHTML='<article class="card"><h3>Live classes unavailable</h3><p>Please make sure the LearnHub server is running, then refresh this page.</p></article>';
+    box.innerHTML='<article class="card"><h3>Classes unavailable</h3><p>Could not connect to the LearnHub backend.</p></article>';
+    console.error(e);
+  }
+}
+async function watchClass(id){
+  let list=[];try{list=(await getContent()).classes||[]}catch{list=JSON.parse(localStorage.getItem('learnhubClasses')||'[]')}
+  const x=list.find(c=>Number(c.id)===Number(id));
+  if(!x||!x.video)return;
+  const u=x.video.trim();if(!/^https?:\/\//i.test(u)){alert('Invalid video link.');return}
+  const w=window.open('','_blank');if(!w){alert('Please allow pop-ups to watch the class.');return}
+  w.document.write('<!doctype html><title>LearnHub Class</title><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;background:#0b1020;color:white;font-family:Arial;display:grid;place-items:center;min-height:100vh}main{width:min(1000px,94%)}video,iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:16px;background:#000}h1{font-size:22px}</style><main><h1>'+String(x.title).replace(/[<>]/g,'')+'</h1><div id="player"></div></main>');
+  const yt=u.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/i);if(yt)w.document.getElementById('player').innerHTML='<iframe src="https://www.youtube.com/embed/'+yt[1]+'" allowfullscreen></iframe>';else w.document.getElementById('player').innerHTML='<video controls src="'+u.replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'"></video>'
+}
+render();setInterval(render,15000);
+</script></body></html>

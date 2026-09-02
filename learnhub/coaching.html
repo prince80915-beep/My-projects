@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LearnHub — Online Coaching</title><link rel="stylesheet" href="coaching.css"></head>
+<body>
+<div id="authScreen" class="auth-screen">
+  <div class="auth-brand"><span>LH</span><div><b>LearnHub</b><small>Learn. Practice. Grow.</small></div></div>
+  <div class="auth-layout">
+    <div class="auth-intro"><span class="eyebrow">ORIGINAL ONLINE LEARNING PLATFORM</span><h1>Build skills.<br><em>Build your future.</em></h1><p>Courses, batches, practice and progress — organized in one simple learning dashboard.</p><div class="trust-row"><span>✓ Self-paced courses</span><span>✓ Live + recorded batches</span><span>✓ Progress tracking</span></div></div>
+    <div class="auth-card"><div class="auth-tabs"><button class="active" data-tab="login">Login</button><button data-tab="register">Create account</button></div>
+      <form id="loginForm" class="auth-form"><h2>Welcome back</h2><p>Login to continue learning.</p><label>Email<input id="loginEmail" type="email" required placeholder="you@example.com"></label><label>Password<input id="loginPassword" type="password" required placeholder="Your password"></label><button class="main-btn">Login & Continue</button><small id="loginMsg"></small></form>
+      <form id="registerForm" class="auth-form hidden"><h2>Create your account</h2><p>Start your learning journey today.</p><label>Full name<input id="regName" required placeholder="Your name"></label><label>Email<input id="regEmail" type="email" required placeholder="you@example.com"></label><label>Password<input id="regPassword" type="password" minlength="6" required placeholder="Minimum 6 characters"></label><button class="main-btn">Create & Login</button><small id="regMsg"></small></form>
+    </div>
+  </div><a class="back" href="coaching.html">← Back to home</a>
+</div>
+<div id="app" class="app hidden">
+<header><a class="brand" href="coaching.html"><span>LH</span><div><b>LearnHub</b><small>Learning platform</small></div></a><nav><a href="#home">Home</a><a href="courses.html">Courses</a><a href="batches.html">Batches</a><a href="classes.html">Classes</a><a href="practice.html">Practice</a><a href="materials.html">Study PDFs</a><a href="my-learning.html">My Learning</a><a href="support.html">Support</a></nav><div class="user"><button id="profileBtn" class="avatar">P</button><span id="userName"></span><button id="logout">Logout</button></div></header>
+<main>
+<section id="home" class="dash-hero"><div><span class="eyebrow">STUDENT DASHBOARD</span><h1>Learn at your<br><em>own pace.</em></h1><p>Pick a course, join a batch, practice what you learn and track your progress.</p><div class="hero-actions"><a href="courses.html" class="hero-btn">Explore courses</a><a href="batches.html" class="hero-link">View batches →</a></div></div><div class="hero-visual"><div class="orbit">✦</div><div class="book">📚</div><b>LearnHub</b><small>Knowledge in action</small></div></section>
+<section class="stats"><div><b id="statCourses">0</b><span>Courses</span></div><div><b id="statBatches">0</b><span>Upcoming batches</span></div><div><b id="statLearning">0</b><span>Enrolled</span></div><div><b>24/7</b><span>Learning access</span></div></section>
+<section id="courses" class="section"><div class="heading"><div><span class="eyebrow">LEARN SOMETHING NEW</span><h2>Popular courses</h2></div><span>Practical skills for real projects</span></div><div class="course-grid" id="courseGrid"></div></section>
+<section id="batches" class="section alt"><div class="heading"><div><span class="eyebrow">LIVE LEARNING</span><h2>Upcoming batches</h2></div><span>Choose your schedule</span></div><div class="batch-grid" id="batchGrid"></div></section>
+<section id="practice" class="section"><div class="practice"><div><span class="eyebrow">PRACTICE ZONE</span><h2>Learn it.<br>Then prove it.</h2><p>Small challenges help you turn lessons into working skills.</p></div><div class="practice-grid"><article><b>01</b><h3>Daily Quiz</h3><p>Test your concepts with quick questions.</p><button onclick="practice('Daily Quiz')">Start practice →</button></article><article><b>02</b><h3>Mini Projects</h3><p>Build small projects from your lessons.</p><button onclick="practice('Mini Projects')">View challenges →</button></article><article><b>03</b><h3>Revision Notes</h3><p>Keep important concepts easy to revisit.</p><button onclick="practice('Revision Notes')">Open notes →</button></article></div></div></section>
+<section id="myCourses" class="section"><div class="heading"><div><span class="eyebrow">YOUR PROGRESS</span><h2>My learning</h2></div><span id="enrolledCount">0 courses</span></div><div id="myLearning" class="learning-box"></div></section>
+</main><footer><span>© 2026 LearnHub</span><span>Original demo platform · HTML · CSS · JavaScript</span></footer></div>
+<div id="toast"></div><script src="coaching.js"></script>
+</body></html>
